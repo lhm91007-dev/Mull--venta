@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sistema de Ventas – Mulltidigitalcr</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #020617;
+      --bg-alt: #0f172a;
+      --card: #1e293b;
+      --accent: #3b82f6;
+      --accent-soft: rgba(59, 130, 246, 0.15);
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --danger: #ef4444;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --border: #334155;
+      --radius: 12px;
+      --shadow: 0 18px 40px rgba(15, 23, 42, 0.85);
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #1e293b 0, #020617 45%, #000 100%);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 24px 12px;
+    }
+    .app {
+      width: 100%;
+      max-width: 1200px;
+      background: linear-gradient(145deg, #020617 0, #020617 40%, #0b1120 100%);
+      border-radius: 24px;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      box-shadow: var(--shadow);
+      padding: 20px 20px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .app-inner {
+      position: relative;
+      z-index: 1;
+    }
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+      align-items: center;
+    }
+    h1 {
+      font-size: 1.6rem;
+      letter-spacing: 0.04em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .logo {
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 0%, #3b82f6 0, #22c55e 40%, #0ea5e9 100%);
+      box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.7), 0 0 18px rgba(59, 130, 246, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #0b1120;
+    }
+    .subtitle {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.9);
+    }
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .tab-btn {
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 0.85rem;
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--muted);
+      cursor: pointer;
+    }
+    .tab-btn.active {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-color: rgba(59, 130, 246, 0.7);
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.7fr) minmax(0, 1.3fr);
+      gap: 16px;
+    }
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+    .card {
+      background: rgba(15, 23, 42, 0.92);
+      border-radius: var(--radius);
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      padding: 14px 14px 16px;
+      backdrop-filter: blur(18px);
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #cbd5f5;
+    }
+    .card-subtitle {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+    input[type="text"],
+    input[type="number"],
+    textarea,
+    select {
+      background: #020617;
+      border-radius: 999px;
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      padding: 7px 10px;
+      font-size: 0.85rem;
+      color: var(--text);
+      outline: none;
+      min-width: 0;
+      width: 100%;
+      margin-bottom: 6px;
+    }
+    textarea {
+      border-radius: 10px;
+      resize: vertical;
+      min-height: 60px;
+    }
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.5);
+    }
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 7px 12px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      border: 1px solid rgba(59, 130, 246, 0.5);
+      transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.1s ease;
+    }
+    button:hover {
+      background: rgba(59, 130, 246, 0.25);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.8);
+    }
+    button.secondary {
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--muted);
+      border-color: rgba(148, 163, 184, 0.5);
+    }
+    button.danger {
+      background: rgba(239, 68, 68, 0.12);
+      color: var(--danger);
+      border-color: rgba(239, 68, 68, 0.6);
+    }
+    button.success {
+      background: rgba(34, 197, 94, 0.12);
+      color: var(--success);
+      border-color: rgba(34, 197, 94, 0.6);
+    }
+    .controls-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .controls-row > * {
+      flex: 1 1 140px;
+    }
+    .list {
+      margin-top: 6px;
+      border-radius: 10px;
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      background: #020617;
+      max-height: 320px;
+      overflow: auto;
+    }
+    .item {
+      padding: 8px 10px;
+      border-bottom: 1px solid rgba(31, 41, 55, 0.8);
+      font-size: 0.85rem;
+    }
+    .item:last-child {
+      border-bottom: none;
+    }
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+    .item-title {
+      font-weight: 500;
+    }
+    .item-meta {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+    .item-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 6px;
+    }
+    .stat-card {
+      background: #020617;
+      border-radius: 10px;
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+    .stat-value {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+    .stat-bar {
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(31, 41, 55, 0.9);
+      overflow: hidden;
+    }
+    .stat-bar-inner {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #22c55e, #3b82f6);
+      width: 0%;
+      transition: width 0.2s ease;
+    }
+    .json-area {
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .json-area textarea {
+      font-family: "JetBrains Mono", "Fira Code", monospace;
+      font-size: 0.8rem;
+      background: #020617;
+      color: var(--accent);
+      border-color: rgba(59, 130, 246, 0.4);
+      min-height: 180px;
+    }
+    .json-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: flex-end;
+    }
+    .footer-note {
+      margin-top: 10px;
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-align: right;
+    }
+    .footer-note span {
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="app-inner">
+      <header>
+        <div>
+          <h1>
+            <span class="logo">SV</span>
+            Sistema de Ventas Pro
+          </h1>
+          <div class="subtitle">
+            Gestión completa de inventario, clientes, ventas y analítica avanzada.
+          </div>
+        </div>
+        <div class="badge">
+          <span class="badge-dot"></span>
+          Optimizado para Mulltidigitalcr
+        </div>
+      </header>
+
+      <nav>
+        <button class="tab-btn active" data-tab="productos">Productos</button>
+        <button class="tab-btn" data-tab="clientes">Clientes</button>
+        <button class="tab-btn" data-tab="ventas">Ventas</button>
+        <button class="tab-btn" data-tab="panel">Panel</button>
+        <button class="tab-btn" data-tab="json">JSON / Datos</button>
+      </nav>
+
+      <div class="layout">
+        <!-- Panel izquierdo dinámico -->
+        <section class="card" id="leftPanel"></section>
+
+        <!-- Panel derecho: resumen -->
+        <section class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Resumen de ventas</div>
+              <div class="card-subtitle">Métricas clave del sistema.</div>
+            </div>
+            <div class="pill">Dashboard</div>
+          </div>
+
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-label">Total ventas</div>
+              <div class="stat-value" id="statTotalVentas">0</div>
+              <div class="stat-bar">
+                <div class="stat-bar-inner" id="barTotalVentas"></div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Ingresos</div>
+              <div class="stat-value" id="statIngresos">₡0</div>
+              <div class="stat-bar">
+                <div class="stat-bar-inner" id="barIngresos"></div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Clientes activos</div>
+              <div class="stat-value" id="statClientes">0</div>
+              <div class="stat-bar">
+                <div class="stat-bar-inner" id="barClientes"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="footer-note">
+            Desarrollado para <span>Mulltidigitalcr</span> · Aplicación web profesional.
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let productos = JSON.parse(localStorage.getItem('mulltidigital_productos')) || [];
+    let clientes = JSON.parse(localStorage.getItem('mulltidigital_clientes')) || [];
+    let ventas = JSON.parse(localStorage.getItem('mulltidigital_ventas')) || [];
+
+    const guardarDatos = () => {
+      localStorage.setItem('mulltidigital_productos', JSON.stringify(productos));
+      localStorage.setItem('mulltidigital_clientes', JSON.stringify(clientes));
+      localStorage.setItem('mulltidigital_ventas', JSON.stringify(ventas));
+    };
+
+    const el = (id) => document.getElementById(id);
+
+    const setActiveTab = (tab) => {
+      document.querySelectorAll(".tab-btn").forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.tab === tab);
+      });
+      renderLeftPanel(tab);
+    };
+
+    document.querySelectorAll(".tab-btn").forEach((btn) => {
+      btn.addEventListener("click", () => setActiveTab(btn.dataset.tab));
+    });
+
+    const formatCurrency = (value) =>
+      "₡" + Number(value || 0).toLocaleString("es-CR", { maximumFractionDigits: 2 });
+
+    const renderStats = () => {
+      const totalVentas = ventas.length;
+      const ingresos = ventas.reduce((sum, v) => sum + v.total, 0);
+      const clientesActivos = clientes.length;
+
+      el("statTotalVentas").textContent = totalVentas;
+      el("statIngresos").textContent = formatCurrency(ingresos);
+      el("statClientes").textContent = clientesActivos;
+
+      el("barTotalVentas").style.width = totalVentas === 0 ? "0%" : "100%";
+      el("barIngresos").style.width = ingresos === 0 ? "0%" : "100%";
+      el("barClientes").style.width = clientesActivos === 0 ? "0%" : "100%";
+    };
+
+    const renderLeftPanel = (tab) => {
+      const panel = el("leftPanel");
+      panel.innerHTML = "";
+
+      if (tab === "productos") {
+        panel.innerHTML = `
+          <div class="card-header">
+            <div>
+              <div class="card-title">Productos</div>
+              <div class="card-subtitle">Gestión avanzada de inventario.</div>
+            </div>
+            <div class="pill">Catálogo</div>
+          </div>
+          <div class="controls-row">
+            <input id="prodNombre" type="text" placeholder="Nombre del producto" />
+            <input id="prodPrecio" type="number" placeholder="Precio (₡)" />
+          </div>
+          <div class="controls-row">
+            <input id="prodStock" type="number" placeholder="Stock disponible" />
+            <textarea id="prodDesc" placeholder="Descripción detallada (opcional)"></textarea>
+          </div>
+          <div class="controls-row">
+            <button id="addProdBtn" type="button">➕ Agregar producto</button>
+          </div>
+          <div class="list" id="prodList"></div>
+        `;
+        el("addProdBtn").addEventListener("click", () => {
+          const nombre = el("prodNombre").value.trim();
+          const precio = parseFloat(el("prodPrecio").value) || 0;
+          const stock = parseInt(el("prodStock").value) || 0;
+          const desc = el("prodDesc").value.trim();
+
+          if (!nombre || precio <= 0 || stock < 0) {
+            alert("Por favor ingrese un nombre válido, precio mayor a 0 y stock correcto.");
+            return;
+          }
+
+          productos.push({ id: Date.now(), nombre, precio, stock, desc });
+          guardarDatos();
+          renderLeftPanel("productos");
+          renderStats();
+        });
+
+        const list = el("prodList");
+        if (productos.length === 0) {
+          list.innerHTML = '<div class="item" style="color:#9ca3af;">No hay productos registrados.</div>';
+        } else {
+          productos.forEach((p, i) => {
+            const div = document.createElement("div");
+            div.className = "item";
+            div.innerHTML = `
+              <div class="item-header">
+                <div class="item-title">${p.nombre}</div>
+                <div class="item-meta">${formatCurrency(p.precio)} · Stock: <span style="color:${p.stock <= 5 ? 'var(--warning)' : 'inherit'}">${p.stock}</span></div>
+              </div>
+              <div class="item-meta">${p.desc || "Sin descripción"}</div>
+              <div class="item-actions">
+                <button class="secondary" type="button" onclick="window.eliminarProducto(${i})">🗑 Eliminar</button>
+              </div>
+            `;
+            list.appendChild(div);
+          });
+        }
+      }
+
+      else if (tab === "clientes") {
+        panel.innerHTML = `
+          <div class="card-header">
+            <div>
+              <div class="card-title">Clientes</div>
+              <div class="card-subtitle">Directorio CRM integrado.</div>
+            </div>
+            <div class="pill">CRM</div>
+          </div>
+          <div class="controls-row">
+            <input id="cliNombre" type="text" placeholder="Nombre completo" />
+            <input id="cliCorreo" type="text" placeholder="Correo electrónico" />
+          </div>
+          <div class="controls-row">
+            <input id="cliTel" type="text" placeholder="Teléfono de contacto" />
+            <textarea id="cliNotas" placeholder="Notas de preferencia (opcional)"></textarea>
+          </div>
+          <div class="controls-row">
+            <button id="addCliBtn" type="button">➕ Registrar cliente</button>
+          </div>
+          <div class="list" id="cliList"></div>
+        `;
+        el("addCliBtn").addEventListener("click", () => {
+          const nombre = el("cliNombre").value.trim();
+          const correo = el("cliCorreo").value.trim();
+          const tel = el("cliTel").value.trim();
+          const notas = el("cliNotas").value.trim();
+
+          if (!nombre) {
+            alert("El nombre del cliente es obligatorio.");
+            return;
+          }
+
+          clientes.push({ id: Date.now(), nombre, correo, tel, notas });
+          guardarDatos();
+          renderLeftPanel("clientes");
+          renderStats();
+        });
+
+        const list = el("cliList");
+        if (clientes.length === 0) {
+          list.innerHTML = '<div class="item" style="color:#9ca3af;">No hay clientes registrados.</div>';
+        } else {
+          clientes.forEach((c, i) => {
+            const div = document.createElement("div");
+            div.className = "item";
+            div.innerHTML = `
+              <div class="item-header">
+                <div class="item-title">${c.nombre}</div>
+                <div class="item-meta">${c.correo || "Sin correo"} · ${c.tel || "Sin teléfono"}</div>
+              </div>
+              <div class="item-meta">${c.notas || "Sin notas adicionales"}</div>
+              <div class="item-actions">
+                <button class="secondary" type="button" onclick="window.eliminarCliente(${i})">🗑 Eliminar</button>
+              </div>
+            `;
+            list.appendChild(div);
+          });
+        }
+      }
+
+      else if (tab === "ventas") {
+        panel.innerHTML = `
+          <div class="card-header">
+            <div>
+              <div class="card-title">Ventas (POS)</div>
+              <div class="card-subtitle">Punto de venta y facturación rápida.</div>
+            </div>
+            <div class="pill">Caja</div>
+          </div>
+          <div class="controls-row">
+            <select id="ventaProd">
+              <option value="">Seleccione producto</option>
+              ${productos.map(p => `<option value="${p.id}">${p.nombre} (${formatCurrency(p.precio)} - Stock: ${p.stock})</option>`).join("")}
+            </select>
+            <select id="ventaCli">
+              <option value="">Seleccione cliente</option>
+              ${clientes.map(c => `<option value="${c.id}">${c.nombre}</option>`).join("")}
+            </select>
+          </div>
+          <div class="controls-row">
+            <input id="ventaCant" type="number" placeholder="Cantidad" min="1" value="1" />
+            <textarea id="ventaNotas" placeholder="Notas de la transacción (opcional)"></textarea>
+          </div>
+          <div class="controls-row">
+            <button id="addVentaBtn" class="success" type="button">💵 Procesar venta</button>
+          </div>
+          <div class="list" id="ventaList"></div>
+        `;
+        el("addVentaBtn").addEventListener("click", () => {
+          const prodId = el("ventaProd").value;
+          const cliId = el("ventaCli").value;
+          const cant = parseInt(el("ventaCant").value) || 0;
+          const notas = el("ventaNotas").value.trim();
+
+          if (!prodId || !cliId || cant <= 0) {
+            alert("Debe seleccionar un producto, un cliente y una cantidad válida.");
+            return;
+          }
+
+          const prod = productos.find(p => p.id == prodId);
+          const cli = clientes.find(c => c.id == cliId);
+
+          if (!prod || !cli) {
+            alert("El producto o cliente seleccionado ya no existe.");
+            return;
+          }
+
+          if (prod.stock < cant) {
+            alert(`Stock insuficiente. Disponible actual: ${prod.stock}`);
+            return;
+          }
+
+          const total = prod.precio * cant;
+          prod.stock -= cant;
+
+          ventas.push({
+            id: Date.now(),
+            producto: prod.nombre,
+            cliente: cli.nombre,
+            cantidad: cant,
+            precioUnit: prod.precio,
+            total,
+            notas,
+            fecha: new Date().toLocaleString("es-CR"),
+          });
+
+          guardarDatos();
+          renderLeftPanel("ventas");
+          renderStats();
+        });
+
+        const list = el("ventaList");
+        if (ventas.length === 0) {
+          list.innerHTML = '<div class="item" style="color:#9ca3af;">No hay ventas registradas aún.</div>';
+        } else {
+          ventas.slice().reverse().forEach((v) => {
+            const div = document.createElement("div");
+            div.className = "item";
+            div.innerHTML = `
+              <div class="item-header">
+                <div class="item-title">${v.producto} (${v.cantidad} unids)</div>
+                <div class="item-meta" style="font-weight:600; color:var(--success);">${formatCurrency(v.total)}</div>
+              </div>
+              <div class="item-meta">Cliente: ${v.cliente} · ${v.fecha}</div>
+              <div class="item-meta">${v.notas || "Sin notas"}</div>
+            `;
+            list.appendChild(div);
+          });
+        }
+      }
+
+      else if (tab === "panel") {
+        const totalIngresos = ventas.reduce((acc, v) => acc + v.total, 0);
+        const stockTotal = productos.reduce((acc, p) => acc + p.stock, 0);
+        const valorInventario = productos.reduce((acc, p) => acc + (p.precio * p.stock), 0);
+        panel.innerHTML = `
+          <div class="card-header">
+            <div>
+              <div class="card-title">Panel Analítico</div>
+              <div class="card-subtitle">Indicadores de rendimiento detallados.</div>
+            </div>
+            <div class="pill">Analytics</div>
+          </div>
+          <div class="stats-grid" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 12px;">
+            <div class="stat-card">
+              <div class="stat-label">Valor total inventario</div>
+              <div class="stat-value">${formatCurrency(valorInventario)}</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Unidades en stock</div>
+              <div class="stat-value">${stockTotal}</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Ticket promedio</div>
+              <div class="stat-value">${ventas.length ? formatCurrency(totalIngresos / ventas.length) : formatCurrency(0)}</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Total transacciones</div>
+              <div class="stat-value">${ventas.length}</div>
+            </div>
+          </div>
+        `;
+      }
+
+      else if (tab === "json") {
+        panel.innerHTML = `
+          <div class="card-header">
+            <div>
+              <div class="card-title">Respaldo y Datos JSON</div>
+              <div class="card-subtitle">Exporta o importa la base de datos completa.</div>
+            </div>
+            <div class="pill">Sistema</div>
+          </div>
+          <div class="json-area">
+            <textarea id="jsonOutput" readonly>${JSON.stringify({ productos, clientes, ventas }, null, 2)}</textarea>
+            <div class="json-actions">
+              <button class="secondary" type="button" onclick="window.copiarJSON()">📋 Copiar JSON</button>
+              <button class="danger" type="button" onclick="window.reiniciarSistema()">⚠️ Borrar todo</button>
+            </div>
+          </div>
+        `;
+      }
+    };
+
+    window.eliminarProducto = (i) => {
+      productos.splice(i, 1);
+      guardarDatos();
+      renderLeftPanel('productos');
+      renderStats();
+    };
+
+    window.eliminarCliente = (i) => {
+      clientes.splice(i, 1);
+      guardarDatos();
+      renderLeftPanel('clientes');
+      renderStats();
+    };
+
+    window.copiarJSON = () => {
+      const txt = el("jsonOutput");
+      if (!txt) return;
+      txt.select();
+      navigator.clipboard.writeText(txt.value).then(() => {
+        alert("Datos copiados al portapapeles.");
+      }).catch(() => {
+        alert("No se pudo copiar automáticamente.");
+      });
+    };
+
+    window.reiniciarSistema = () => {
+      if (confirm("¿Está seguro de borrar todos los registros de Mulltidigitalcr?")) {
+        productos = [];
+        clientes = [];
+        ventas = [];
+        guardarDatos();
+        renderLeftPanel('json');
+        renderStats();
+      }
+    };
+
+    renderLeftPanel("productos");
+    renderStats();
+  </script>
+</body>
+</html>
